@@ -5,11 +5,22 @@ describe Admin::ContentController do
 
 #nove
   describe "merge articles" do
+	  before do
+	      Factory(:blog)
+	      #TODO delete this after remove fixture
+	      Profile.delete_all
+	      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_admin, :label => Profile::ADMIN))
+	      @user.editor = 'simple'
+	      @user.save
+	      @article1 = Factory(:article)
+	      @article2 = Factory(:article)
+	      request.session = { :user => @user.id }
+	  end
+
+
     it 'should call the merge_with model method at the Article' do
-      @article = mock('article');
-      Article.should_receive(:merge_with).with('2').
-        and_return(@article)
-      post :merge_with, {:article_id => '2'}
+      Article.should_receive(:merge_with).with(@article2.id).and_return(@article1)
+      post :merge_with, 'id' => @article1.id, :article_id => @article2.id #'article' => {:body => body, :text_filter => 'textile'}
     end
     it '' do
       pending
