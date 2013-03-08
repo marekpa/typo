@@ -3,6 +3,21 @@
 describe Admin::ContentController do
   render_views
 
+#nove
+  describe "merge articles" do
+    it 'should call the merge_with model method at the Article' do
+      @article = mock('article');
+      Article.should_receive(:merge_with).with('2').
+        and_return(@article)
+      post :merge_with, {:article_id => '2'}
+    end
+    it '' do
+      pending
+    end
+    
+  end
+#koniec
+  
   # Like it's a shared, need call everywhere
   shared_examples_for 'index action' do
 

@@ -19,5 +19,10 @@ Feature: Merge Articles
     And I follow "Foobar"
     Then I should see "Merge Articles"
 
-
+  Scenario: When articles are merged, the merged article should contain the text of both previous articles
+    And I am logged into the admin panel
+    And "Foobar" article is published
+    And "Pokus1" article is published
+    And I merge "Foobar" article with "Pokus1"
+    Then merged article should contain the text of both articles
 
