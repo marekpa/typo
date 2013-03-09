@@ -15,7 +15,7 @@ Given /^I merge "(.*?)" article with "(.*?)"$/ do |article1, article2|
 	@art2 = Article.where(["title = ?", article2]).first
   step %Q{I follow "#{article1}"}  
   steps %Q{ 
-  	When I fill in "article_id" with "#{@art2.id}"
+  	When I fill in "merge_with" with "#{@art2.id}"
 		And I press "Merge!"
 	}	
 end

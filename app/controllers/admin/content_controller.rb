@@ -21,7 +21,7 @@ class Admin::ContentController < Admin::BaseController
       flash[:error] = _("Error, non existing merging article")
       return
     end
-		@article2 = Article.find(params[:article_id])
+		@article2 = Article.find(params[:merge_with])
 		if @article2.nil?
       redirect_to :action => 'index'
       flash[:error] = _("Error, non existing article to merge with")
