@@ -8,7 +8,7 @@
  <!-- nove -->
   <% unless @current_user.nil? %>
 	  <% if ((@current_user.profile_id == 1) and (form_action[:id] != nil)) %>
-	    <%= form_tag :action => "merge_with", :name => "merge_with"  do %>
+	    <%= form_tag :action => "merge_with", :name => "merge_with", :id => @article.id  do %>
 	      <h2>Merge Articles</h2>
 	      <%= label_tag "article_id", "Article ID"  %>
 	      <%= text_field_tag "article_id"  %>      

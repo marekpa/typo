@@ -3,7 +3,7 @@
 describe Admin::ContentController do
   render_views
 
-#nove
+#######nove
   describe "merge articles" do
 	  before do
 	      Factory(:blog)
@@ -12,22 +12,29 @@ describe Admin::ContentController do
 	      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_admin, :label => Profile::ADMIN))
 	      @user.editor = 'simple'
 	      @user.save
-	      @article1 = Factory(:article)
-	      @article2 = Factory(:article)
+	      @article1 = Factory(:article, :body => 'once uppon an originally time, ')
+	      @article2 = Factory(:article, :body => 'behind seven sees and seven mountains')	      
 	      request.session = { :user => @user.id }
 	  end
 
 
-    it 'should call the merge_with model method at the Article' do
-      Article.should_receive(:merge_with).with(@article2.id).and_return(@article1)
-      post :merge_with, 'id' => @article1.id, :article_id => @article2.id #'article' => {:body => body, :text_filter => 'textile'}
-    end
-    it '' do
-      pending
+    it 'should call the merge_with instance model method at an article' do
+      Article.should_receive(:find).with(@article1.id).and_return(@article1)
+      Article.should_receive(:find).with(@article2.id).and_return(@article2)
+      @article1.should_receive(:merge_with).with(@article2.id)
+      post :merge_with, 'id' => @article1.id, 'article_id' => @article2.id
     end
     
+    it 'should merge content of existing articles' do
+    	post :merge_with, 'id' => @article1.id, 'article_id' => @article2.id
+      response.should redirect_to :action => 'edit', :id => @article1.id, :controller => "admin/content"
+    end
+    
+    it 'should give an error message if article to merge with does not exist' do
+      pending
+    end
   end
-#koniec
+#######koniec
   
   # Like it's a shared, need call everywhere
   shared_examples_for 'index action' do

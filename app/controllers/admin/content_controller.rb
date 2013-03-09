@@ -6,11 +6,32 @@ class Admin::ContentController < Admin::BaseController
 
   cache_sweeper :blog_sweeper
 
-  #nove
+  #######nove
   def merge_with
-  
+  	id1 = params[:id]
+    id1 = params[:article][:id] if params[:article] && params[:article][:id]
+		@article1 = Article.find(id1)
+		if @article1.nil?
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, non existing merging article")
+      return
+    end
+		@article2 = Article.find(params[:article_id])
+		if @article2.nil?
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, non existing article to merge with")
+      return
+    end
+    @article = @article1.merge_with(@article2.id)
+    if @article.nil?
+      redirect_to :action => 'index'
+      flash[:error] = _("Error, merging function failed")
+      return
+    end
+
+    redirect_to :action => 'edit', :id => @article.id
   end
-  #koniec
+  #######koniec
   
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip

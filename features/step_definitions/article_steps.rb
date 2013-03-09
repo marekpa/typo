@@ -11,11 +11,12 @@ And /"(.*)" article is published$/ do |article|
 end
 
 Given /^I merge "(.*?)" article with "(.*?)"$/ do |article1, article2|
-  steps %Q{
+  step %Q{
     When I follow "#{article1}"
     And I fill in "article_id" with "2"
     And press "Merge!"
   }
+  #TODO - najst id v databaze a potom aktivovat vyhladavanie
 end
 
 Then /^merged article should contain the text of both articles$/ do
