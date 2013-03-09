@@ -8,6 +8,11 @@ class Admin::ContentController < Admin::BaseController
 
   #######nove
   def merge_with
+  	if current_user.profile_id != 1 #non admin user
+  		redirect_to :action => 'index'
+      flash[:error] = _("Error, non admin user logged-in")
+      return
+  	end
   	id1 = params[:id]
     id1 = params[:article][:id] if params[:article] && params[:article][:id]
 		@article1 = Article.find(id1)

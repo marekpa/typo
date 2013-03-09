@@ -12,13 +12,16 @@ describe Admin::ContentController do
 	      @user = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_admin, :label => Profile::ADMIN))
 	      @user.editor = 'simple'
 	      @user.save
+	      @user2 = Factory(:user, :text_filter => Factory(:markdown), :profile => Factory(:profile_publisher))
+	      @user2.editor = 'simple'
+	      @user2.save
 	      @article1 = Factory(:article, :body => 'once uppon an originally time, ')
-	      @article2 = Factory(:article, :body => 'behind seven sees and seven mountains')	      
-	      request.session = { :user => @user.id }
+	      @article2 = Factory(:article, :body => 'behind seven sees and seven mountains')	      	      
 	  end
 
 
     it 'should call the merge_with instance model method at an article' do
+    	request.session = { :user => @user.id }
       Article.should_receive(:find).with(@article1.id).and_return(@article1)
       Article.should_receive(:find).with(@article2.id).and_return(@article2)
       @article1.should_receive(:merge_with).with(@article2.id)
@@ -26,12 +29,19 @@ describe Admin::ContentController do
     end
     
     it 'should merge content of existing articles' do
+    	request.session = { :user => @user.id }
+    	@art1 = Article.find(@article1.id)
+			@art2 = Article.find(@article2.id)
     	post :merge_with, 'id' => @article1.id, 'article_id' => @article2.id
       response.should redirect_to :action => 'edit', :id => @article1.id, :controller => "admin/content"
+      @art = Article.find(@article1.id)
+      @art.body.should include(@article2.body)
     end
     
-    it 'should give an error message if article to merge with does not exist' do
-      pending
+    it 'should not allow a non-admin user to merge articles' do
+      request.session = { :user => @user2.id }
+      post :merge_with, 'id' => @article1.id, 'article_id' => @article2.id
+      assert_equal "Error, non admin user logged-in", flash[:error]
     end
   end
 #######koniec

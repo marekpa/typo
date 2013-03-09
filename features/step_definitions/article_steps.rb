@@ -10,16 +10,22 @@ And /"(.*)" article is published$/ do |article|
   }
 end
 
-Given /^I merge "(.*?)" article with "(.*?)"$/ do |article1, article2|
-  step %Q{
-    When I follow "#{article1}"
-    And I fill in "article_id" with "2"
-    And press "Merge!"
-  }
-  #TODO - najst id v databaze a potom aktivovat vyhladavanie
+Given /^I merge "(.*?)" article with "(.*?)"$/ do |article1, article2|	
+	@art1 = Article.where(["title = ?", article1]).first
+	@art2 = Article.where(["title = ?", article2]).first
+  step %Q{I follow "#{article1}"}  
+  steps %Q{ 
+  	When I fill in "article_id" with "#{@art2.id}"
+		And I press "Merge!"
+	}	
 end
 
 Then /^merged article should contain the text of both articles$/ do
-  pending # express the regexp above with the code you wish you had
+#  p @art1
+#  p @art2
+  steps %Q{ 
+	  Then I should see "#{@art1.body}"
+  	And I should see "#{@art2.body}"
+	}
 end
 
