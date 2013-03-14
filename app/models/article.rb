@@ -122,6 +122,33 @@ class Article < Content
 
   end
 
+
+##########nove
+	def merge_with(other_article_id)
+		article2 = Article.find_by_id(other_article_id)
+		
+#		new_article = Article.new
+#		new_article.tap do |art|
+# 	    art.allow_comments = art.blog.default_allow_comments
+# 	    art.text_filter = art.blog.text_filter
+# 	    art.old_permalink = art.permalink_url unless art.permalink.nil? or art.permalink.empty?
+# 	    art.published = true
+# 	  end
+# 	  new_article.content = this.content + article2.content
+# 	  new_article
+
+		self.body += article2.body
+		self.extended += article2.extended
+		article2.comments.each do |comm|
+			self.comments << comm
+		end
+		self.save!
+		article2 = Article.find_by_id(other_article_id)
+		article2.destroy
+		self
+	end
+##########koniec
+
   def year_url
     published_at.year.to_s
   end
